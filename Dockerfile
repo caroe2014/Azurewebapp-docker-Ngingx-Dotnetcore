@@ -1,9 +1,21 @@
+#FROM nginx:latest
+
+#ENV SSH_PASSWD "root:Docker!"
+
+#RUN mkdir -p /usr/local/nginx  \
+#    && chmod 755 /usr/local/nginx \
+#     && echo "$SSH_PASSWD" | chpasswd \
+#     && echo "cd /home" >> /etc/bash.bashrc
+
+#COPY nginx.conf /usr/local/nginx/nginx.conf
+
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
 WORKDIR /app
+ENV SSH_PASSWD "root:Docker!"
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 
-ENV SSH_PASSWD "root:Docker!"
+
 
 RUN apt-get update \
 	&& apt-get install -y apt-utils \
@@ -37,5 +49,5 @@ WORKDIR /app
 COPY --from=publish /app/publish .
 
 ENV SSH_PORT 2222
-EXPOSE 2222
+EXPOSE  2222
 ENTRYPOINT ["dotnet", "WebApplication2.dll"]
